@@ -92,5 +92,3 @@ Errors follow:
 - Unit-test handler validation using `httptest`.
 - Integration-test storage with a temp SQLite file.
 
-## License
-MIT (see repository).
