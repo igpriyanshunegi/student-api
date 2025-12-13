@@ -38,57 +38,88 @@ go run ./cmd/students-api --config config/local.yaml
 ```
 Server starts on the configured `address` and logs startup info.
 
-## API
-Base URL: `http://<address>/api`
+## API Documentation
 
-### Create Student
+This section provides detailed API documentation for the Students API.
+
+### Base URL
+The base URL for the API is: `http://localhost:8082/api`
+
+### Endpoints
+
+#### Create Student
 - **POST** `/students`
-- Body
-```json
-{
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "age": 21
-}
-```
-- Responses
-  - `201 Created`: `{ "id": <int64> }`
-  - `400 Bad Request`: validation error (e.g., missing field)
-  - `500 Internal Server Error`
+- **Description**: Creates a new student.
+- **Request Body**:
+  ```json
+  {
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "age": 21
+  }
+  ```
+- **Responses**:
+  - `201 Created`: Returns the created student ID.
+    ```json
+    {
+      "id": <int64>
+    }
+    ```
+  - `400 Bad Request`: Validation error (e.g., missing field).
+  - `500 Internal Server Error`: On server error.
 
-### Get Student By ID
+#### Get Student By ID
 - **GET** `/students/{id}`
-- Responses
-  - `200 OK`: `Student` JSON
-  - `400 Bad Request`: invalid id format
-  - `500 Internal Server Error`: on lookup failure
+- **Description**: Retrieves a student by their ID.
+- **Responses**:
+  - `200 OK`: Returns the student details.
+    ```json
+    {
+      "id": <int64>,
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "age": 21
+    }
+    ```
+  - `400 Bad Request`: Invalid ID format.
+  - `500 Internal Server Error`: On lookup failure.
 
-### List Students
+#### List Students
 - **GET** `/students`
-- Responses
-  - `200 OK`: `Student[]`
-  - `500 Internal Server Error`
+- **Description**: Retrieves a list of all students.
+- **Responses**:
+  - `200 OK`: Returns an array of students.
+    ```json
+    [
+      {
+        "id": <int64>,
+        "name": "Jane Doe",
+        "email": "jane@example.com",
+        "age": 21
+      }
+    ]
+    ```
+  - `500 Internal Server Error`: On server error.
 
-### Error Payloads
-Errors follow:
+### Error Handling
+All error responses follow this structure:
 ```json
 {
   "status": "Error",
-  "error": "field name is required"
+  "error": "<error message>"
 }
 ```
 
-## Validation Rules
+### Validation Rules
 - `name`: required
 - `email`: required (format not enforced yet)
 - `age`: required
 
-## Development Notes
-- Graceful shutdown allows in-flight requests up to 5s to finish when the process receives SIGINT/SIGTERM.
-- Storage implementation lives behind the `Storage` interface; swap in other backends by implementing `CreateStudent`, `GetStudentById`, `GetStudentList`.
-- Logging uses `log/slog`; adjust verbosity via environment as needed.
+### Development Notes
+- The API supports graceful shutdown, allowing in-flight requests to finish when the server is stopped.
+- The storage implementation is abstracted behind the `Storage` interface, allowing for easy swapping of storage backends.
 
-## Testing Ideas
-- Unit-test handler validation using `httptest`.
-- Integration-test storage with a temp SQLite file.
+### Testing
+- Unit tests should be written for handler validation using `httptest`.
+- Integration tests should be conducted with a temporary SQLite file.
 
