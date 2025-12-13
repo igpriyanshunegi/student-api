@@ -116,10 +116,17 @@ All error responses follow this structure:
 - `age`: required
 
 ### Development Notes
-- The API supports graceful shutdown, allowing in-flight requests to finish when the server is stopped.
-- The storage implementation is abstracted behind the `Storage` interface, allowing for easy swapping of storage backends.
+- The API supports graceful shutdown, allowing in-flight requests to finish when the server is stopped. This ensures that no requests are abruptly terminated, providing a better user experience.
+- The storage implementation is abstracted behind the `Storage` interface, allowing for easy swapping of storage backends. This design promotes flexibility and scalability, enabling developers to integrate different storage solutions without significant code changes.
+- Logging is implemented using the `log/slog` package, which allows for adjustable verbosity levels. This can be configured via environment variables, making it easier to debug issues in different environments.
+- The API is designed with a focus on clean architecture principles, separating concerns between different components such as routing, handling, and storage. This modular approach enhances maintainability and testability.
 
 ### Testing
-- Unit tests should be written for handler validation using `httptest`.
-- Integration tests should be conducted with a temporary SQLite file.
+- Unit tests should be written for handler validation using `httptest`. This allows for testing HTTP handlers in isolation, ensuring that they behave as expected under various conditions.
+- Integration tests should be conducted with a temporary SQLite file. This helps verify that the entire system works together correctly, including database interactions and API responses.
+- Consider using mocking libraries to simulate external dependencies during testing, which can help isolate tests and improve reliability.
+- Performance tests should be conducted to ensure the API can handle expected loads, especially during peak usage times. Tools like `wrk` or `hey` can be used for load testing.
+- Documentation for testing procedures should be maintained to ensure that all team members can easily understand and execute tests.
+
+
 
